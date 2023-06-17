@@ -2,6 +2,7 @@
 #define DEQUE_H
 
 typedef struct _deque *Deque;
+typedef void (*free_deque)(void *);
 
 Deque deque();
 void  deque_push_back(Deque d, void *data);

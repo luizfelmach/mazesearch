@@ -6,11 +6,12 @@
 typedef void **block;
 
 struct _deque {
-    block *data;
-    int    allocated_block;
-    int    block_size;
-    int    block_up, block_down;
-    int    begin, end;
+    block     *data;
+    int        allocated_block;
+    int        block_size;
+    int        block_up, block_down;
+    int        begin, end;
+    free_deque free;
 };
 
 void _deque_shift_blocks_up(Deque d, int shift) {
@@ -86,13 +87,14 @@ void _deque_ensure_blocks_down(Deque d) {
     }
 }
 
-Deque deque() {
+Deque deque(free_deque free) {
     Deque d            = calloc(1, sizeof(struct _deque));
     d->allocated_block = 10;
     d->block_size      = 10;
     d->block_up = d->block_down = (d->allocated_block) / 2;
     d->begin = d->end = 0;
     d->data           = calloc(d->allocated_block, sizeof(block));
+    d->free           = free;
     return d;
 }
 
@@ -131,10 +133,12 @@ void *deque_pop_back(Deque d) {
     int   last = deque_size(d) - 1;
     void *data = deque_at(d, last);
     d->end -= 1;
-    if (d->end == -1) {
-        d->end = d->block_size - 1;
+    if (d->end == 0) {
         free(d->data[d->block_down]);
         d->data[d->block_down] = NULL;
+    }
+    if (d->end == -1) {
+        d->end = d->block_size - 1;
         d->block_down -= 1;
     }
     return data;
@@ -168,4 +172,14 @@ int deque_size(Deque d) {
 }
 
 void deque_destroy(Deque d) {
+    int i;
+    int size = deque_size(d);
+    for (i = 0; i < size; i++) {
+        void *data = deque_pop_front(d);
+        if (d->free) {
+            d->free(data);
+        }
+    }
+    free(d->data);
+    free(d);
 }
