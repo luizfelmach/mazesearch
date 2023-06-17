@@ -26,7 +26,7 @@ void _deque_shift_blocks_up(Deque d, int shift) {
 
 void _deque_shift_blocks_down(Deque d, int shift) {
     int i;
-    for (i = d->block_down; i >= d->block_up; i--) {
+    for (i = d->block_down; i > d->block_up; i--) {
         d->data[i + shift] = d->data[i];
         d->data[i]         = NULL;
     }
@@ -34,56 +34,41 @@ void _deque_shift_blocks_down(Deque d, int shift) {
     d->block_down += shift;
 }
 
-void _deque_center_blocks(Deque d) {
-    int current_middle = (d->block_down + d->block_up) / 2;
-    int shift          = (d->allocated_block / 2) - current_middle;
+int _deque_unused_block_up(Deque d) {
+    return d->block_up;
+}
 
-    if (shift > 0) {
-        _deque_shift_blocks_down(d, shift);
-    } else if (shift < 0) {
-        _deque_shift_blocks_up(d, -shift);
+int _deque_unused_block_down(Deque d) {
+    return d->allocated_block - d->block_down - 1;
+}
+
+void _deque_resolve_block_down(Deque d) {
+    int unused_block_up = _deque_unused_block_up(d);
+    if (unused_block_up > 5) {
+        _deque_shift_blocks_up(d, unused_block_up / 2);
+    } else {
+        int size = d->allocated_block;
+        d->allocated_block *= 2;
+        block *b = calloc(d->allocated_block, sizeof(block));
+        memcpy(b, d->data, size * sizeof(block));
+        free(d->data);
+        d->data = b;
     }
 }
 
-int _deque_has_block_up(Deque d) {
-    return d->block_up != 0;
-}
-
-int _deque_has_block_down(Deque d) {
-    return d->block_down != (d->allocated_block - 1);
-}
-
-int _deque_is_centralizable(Deque d) {
-    return (d->allocated_block - d->block_down - 1) + (d->block_up) > 1;
-}
-
-void _deque_ensure_blocks_up(Deque d) {
-    if (!_deque_has_block_up(d)) {
-        if (_deque_is_centralizable(d)) {
-            _deque_center_blocks(d);
-        } else {
-            int size = d->allocated_block;
-            d->allocated_block *= 3;
-            block *b = calloc(d->allocated_block, sizeof(block));
-            memcpy(b, d->data, size * sizeof(block));
-            d->data = b;
-            _deque_center_blocks(d);
-        }
-    }
-}
-
-void _deque_ensure_blocks_down(Deque d) {
-    if (!_deque_has_block_down(d)) {
-        if (_deque_is_centralizable(d)) {
-            _deque_center_blocks(d);
-        } else {
-            int size = d->allocated_block;
-            d->allocated_block *= 3;
-            block *b = calloc(d->allocated_block, sizeof(block));
-            memcpy(b, d->data, size * sizeof(block));
-            d->data = b;
-            _deque_center_blocks(d);
-        }
+void _deque_resolve_block_up(Deque d) {
+    int unused_block_down = _deque_unused_block_down(d);
+    if (unused_block_down > 5) {
+        _deque_shift_blocks_down(d, (unused_block_down / 2) + 1);
+    } else {
+        int size = d->allocated_block;
+        d->allocated_block *= 2;
+        block *b = calloc(d->allocated_block, sizeof(block));
+        memcpy(b, d->data, size * sizeof(block));
+        free(d->data);
+        d->data           = b;
+        unused_block_down = _deque_unused_block_down(d);
+        _deque_shift_blocks_down(d, (unused_block_down / 2) + 1);
     }
 }
 
@@ -99,7 +84,9 @@ Deque deque(free_deque free) {
 }
 
 void deque_push_back(Deque d, void *data) {
-    _deque_ensure_blocks_down(d);
+    if (d->block_down == d->allocated_block) {
+        _deque_resolve_block_down(d);
+    }
     if (!d->data[d->block_down]) {
         d->data[d->block_down] = calloc(d->block_size, sizeof(void **));
     }
@@ -112,13 +99,14 @@ void deque_push_back(Deque d, void *data) {
 }
 
 void deque_push_front(Deque d, void *data) {
-    _deque_ensure_blocks_up(d);
     d->begin -= 1;
     if (d->begin == -1) {
         d->block_up -= 1;
         d->begin = d->block_size - 1;
     }
-    _deque_ensure_blocks_up(d);
+    if (d->block_up == -1) {
+        _deque_resolve_block_up(d);
+    }
     if (!d->data[d->block_up]) {
         d->data[d->block_up] = calloc(d->block_size, sizeof(void **));
     }
@@ -175,10 +163,13 @@ void deque_destroy(Deque d) {
     int i;
     int size = deque_size(d);
     for (i = 0; i < size; i++) {
-        void *data = deque_pop_front(d);
+        void *data = deque_pop_back(d);
         if (d->free) {
             d->free(data);
         }
+    }
+    for (i = 0; i < d->allocated_block; i++) {
+        free(d->data[i]);
     }
     free(d->data);
     free(d);

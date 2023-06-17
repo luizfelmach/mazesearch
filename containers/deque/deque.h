@@ -12,6 +12,5 @@ void *deque_pop_front(Deque d);
 void *deque_at(Deque d, int index);
 int   deque_size(Deque d);
 void  deque_destroy(Deque d);
-void  deque_debug(Deque d);
 
 #endif
