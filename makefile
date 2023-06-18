@@ -12,7 +12,7 @@
 PROJECT    =     mazesearch
 TARGETS    =     
 FILES      =     ./*.c
-IMPORTS    =     containers/*
+IMPORTS    =     containers/* maze
 LINKER     =     m
 
 # Folders
