@@ -34,9 +34,9 @@ void graph_show(Graph g) {
         for (j = 0; j < g->column; j++) {
             if (g->nodes[i][j]) {
                 g_node_show(g->nodes[i][j]);
+                printf("\n");
             }
         }
-        printf("\n");
     }
 }
 
