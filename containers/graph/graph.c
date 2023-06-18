@@ -8,7 +8,7 @@ struct _graph {
     int     row, column;
 };
 
-Graph graph(int row, int column, graph_free free) {
+Graph graph(int row, int column) {
     Graph g   = calloc(1, sizeof(struct _graph));
     g->row    = row;
     g->column = column;
