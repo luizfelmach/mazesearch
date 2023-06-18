@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 int main() {
-    Graph g  = graph(100, 200, NULL);
+    Graph g  = graph(100, 200);
     GNode gn = g_node(10, 10);
     g_node_edge(gn, 1, 10);
     g_node_edge(gn, 3, 50);
