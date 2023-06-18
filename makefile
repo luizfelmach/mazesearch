@@ -12,7 +12,7 @@
 PROJECT    =     mazesearch
 TARGETS    =     
 FILES      =     ./*.c
-IMPORTS    =     containers/* maze
+IMPORTS    =     containers/* maze algorithms
 LINKER     =     m
 
 # Folders
@@ -130,7 +130,7 @@ $(BUILD_T)/%: %.c $(LIBRARY) $(HEADER)
 	$(eval OUT = $(addprefix $(BUILD_T)/, $(subst .c,,$<)))
 	@mkdir -p $(FOLDER)
 	@echo "building test $(notdir $(OUT))"
-	@$(CC) $(LL) $(CC_FLAGS) -o $(OUT) $< -I$(BUILD_I) -L$(BUILD_L) -l$(PROJECT)
+	@$(CC) $(LL) $(CC_FLAGS) -o $(OUT) $< -I$(BUILD_I) -L$(BUILD_L) -l$(PROJECT)  $(LL)
 
 
 .PHONY: clean
