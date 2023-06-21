@@ -12,15 +12,18 @@ int main(int argc, char **argv) {
         printf("error: can not open file '%s'\n", argv[1]);
         exit(1);
     }
-    Maze m = maze_make(f);
+    Deque path     = deque(free);
+    int   expanded = 0;
+    Maze  m        = maze_make(f);
     maze_show(m);
     Graph g = maze_to_graph(m);
     graph_show(g);
 
-    dfs(g, 4, 0, 1, 1);
+    dfs(g, (Point){0, 0}, (Point){3, 3}, path, &expanded);
 
     graph_destroy(g);
     maze_destroy(m);
+    deque_destroy(path);
     fclose(f);
     return 0;
 }

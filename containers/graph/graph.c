@@ -20,12 +20,12 @@ Graph graph(int row, int column) {
     return g;
 }
 
-void graph_node_add(Graph g, int i, int j, GNode gn) {
-    g->nodes[i][j] = gn;
+void graph_node_add(Graph g, int x, int y, GNode gn) {
+    g->nodes[x][y] = gn;
 }
 
-GNode graph_node_get(Graph g, int i, int j) {
-    return g->nodes[i][j];
+GNode graph_node_get(Graph g, int x, int y) {
+    return g->nodes[x][y];
 }
 
 void graph_show(Graph g) {
