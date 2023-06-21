@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int possible_paths[8][2] = {{0, 1},  {1, 0},   {1, 1},  {-1, 0},
+int neighborhood[8][2] = {{0, 1},  {1, 0},   {1, 1},  {-1, 0},
                             {0, -1}, {-1, -1}, {1, -1}, {-1, 1}};
 
 struct _maze {
@@ -34,15 +34,6 @@ void maze_show(Maze m) {
     }
 }
 
-void maze_destroy(Maze m) {
-    int i;
-    for (i = 0; i < m->row; i++) {
-        free(m->maze[i]);
-    }
-    free(m->maze);
-    free(m);
-}
-
 Graph maze_to_graph(Maze m) {
     int   i, j, k;
     int   row    = m->row;
@@ -53,8 +44,8 @@ Graph maze_to_graph(Maze m) {
             if (!m->maze[i][j]) {
                 GNode gn = g_node(i, j);
                 for (k = 0; k < 8; k++) {
-                    int n_i = i + possible_paths[k][0];
-                    int n_j = j + possible_paths[k][1];
+                    int n_i = i + neighborhood[k][0];
+                    int n_j = j + neighborhood[k][1];
                     if (n_i < 0 || n_i >= row) {
                         continue;
                     }
@@ -71,4 +62,13 @@ Graph maze_to_graph(Maze m) {
         }
     }
     return g;
+}
+
+void maze_destroy(Maze m) {
+    int i;
+    for (i = 0; i < m->row; i++) {
+        free(m->maze[i]);
+    }
+    free(m->maze);
+    free(m);
 }

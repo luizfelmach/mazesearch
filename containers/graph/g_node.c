@@ -1,14 +1,12 @@
 #include <g_node.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 
 struct _g_node {
     int       size_edge;
     NodeState state;
     edge      edge;
     edge      edges[8];
-    time_t    time_visited;
 };
 
 GNode g_node(int i, int j) {
@@ -33,9 +31,6 @@ NodeState g_node_state(GNode gn) {
 }
 
 void g_node_set_state(GNode gn, NodeState s) {
-    if (s == VISITED) {
-        gn->time_visited = time(NULL);
-    }
     gn->state = s;
 }
 
@@ -57,8 +52,4 @@ void g_node_show(GNode gn) {
 
 void g_node_destroy(GNode gn) {
     free(gn);
-}
-
-time_t g_node_time_visited(GNode gn) {
-    return gn->time_visited;
 }

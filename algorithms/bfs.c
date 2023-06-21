@@ -5,8 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void bfs(Graph g, int start_x, int start_y, int dest_x, int dest_y,
-         graph_search_routine routine) {
+void bfs(Graph g, int start_x, int start_y, int dest_x, int dest_y) {
     GNode gn = graph_node_get(g, start_x, start_y);
     if (!gn) {
         printf("IMPOSSIBLE\n");
@@ -16,7 +15,6 @@ void bfs(Graph g, int start_x, int start_y, int dest_x, int dest_y,
     g_node_set_state(gn, VISITED);
     queue_push(nodes, gn);
     while (!queue_empty(nodes)) {
-        routine(g);
         GNode q = queue_enqueue(nodes);
         int   i;
         for (i = 0; i < g_node_edge_size(q); i++) {

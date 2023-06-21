@@ -1,9 +1,8 @@
 #ifndef G_NODE_H
 #define G_NODE_H
 
-#include <time.h>
-
 typedef struct _g_node *GNode;
+
 typedef struct {
     int i, j;
 } edge;
@@ -22,7 +21,5 @@ NodeState g_node_state(GNode gn);
 void      g_node_set_state(GNode gn, NodeState s);
 void      g_node_show(GNode gn);
 void      g_node_destroy(GNode gn);
-
-time_t g_node_time_visited(GNode gn);
 
 #endif

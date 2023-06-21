@@ -2,11 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void nothing(Graph g) {
-    graph_maze(g);
-    usleep(10000);
-}
-
 int main(int argc, char **argv) {
     if (argc <= 1) {
         printf("usage: %s <maze.bin>\n", argv[0]);
@@ -22,7 +17,7 @@ int main(int argc, char **argv) {
     Graph g = maze_to_graph(m);
     graph_show(g);
 
-    dfs(g, 4, 0, 1, 1, nothing);
+    dfs(g, 4, 0, 1, 1);
 
     graph_destroy(g);
     maze_destroy(m);
