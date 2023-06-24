@@ -10,7 +10,7 @@
 
 
 PROJECT    =     mazesearch
-TARGETS    =     
+TARGETS    =     main.c
 FILES      =     ./*.c
 IMPORTS    =     containers/* maze algorithms
 LINKER     =     m
@@ -83,7 +83,7 @@ $(BUILD_B)/%: %.c $(LIBRARY) $(HEADER)
 	$(eval OUT = $(addprefix $(BUILD_B)/, $(subst .c,,$<)))
 	@mkdir -p $(FOLDER)
 	@echo "linking with $(notdir $(OUT))"
-	@$(CC) $(LL) $(CC_FLAGS) -o $(OUT) -L$(BUILD_L) -I$(BUILD_I)/ $< -l$(PROJECT)
+	@$(CC) $(LL) $(CC_FLAGS) -o $(OUT) -L$(BUILD_L) -I$(BUILD_I)/ $< -l$(PROJECT)  $(LL)
 	@cp $(OUT) .
 
 # Library
@@ -100,14 +100,14 @@ $(BUILD_O)/%.o: %.c %.h
 	$(eval OUT = $(addprefix $(BUILD_O)/, $(subst .c,.o,$<)))
 	@mkdir -p $(FOLDER)
 	@echo "compiling $(notdir $(OUT))"
-	@$(CC) $(LL) $(CC_FLAGS) -c -o $(OUT) $< $(INCLUDES)
+	@$(CC) $(LL) $(CC_FLAGS) -c -o $(OUT) $< $(INCLUDES)  $(LL)
 
 $(BUILD_O)/%.o: %.c
 	$(eval FOLDER = $(addprefix $(BUILD_O)/, $(dir $<)))
 	$(eval OUT = $(addprefix $(BUILD_O)/, $(subst .c,.o,$<)))
 	@mkdir -p $(FOLDER)
 	@echo "compiling $(notdir $(OUT))"
-	@$(CC) $(LL) $(CC_FLAGS) -c -o $(OUT) $< $(INCLUDES)
+	@$(CC) $(LL) $(CC_FLAGS) -c -o $(OUT) $< $(INCLUDES)  $(LL)
 
 # Header
 

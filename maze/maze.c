@@ -25,11 +25,22 @@ Maze maze_make(FILE *f) {
 }
 
 void maze_show(Maze m) {
-    printf("%d %d\n", m->row, m->column);
     int i, j;
+
+    printf("   ");
+    for (j = 0; j < m->column; j++) {
+        printf("%d ", j);
+    }
+    printf("\n\n");
+
     for (i = 0; i < m->row; i++) {
+        printf("%d  ", i);
         for (j = 0; j < m->column; j++) {
-            printf("%d ", m->maze[i][j]);
+            if (m->maze[i][j]) {
+                printf("# ");
+            } else {
+                printf("  ");
+            }
         }
         printf("\n");
     }
