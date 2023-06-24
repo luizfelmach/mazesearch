@@ -17,7 +17,7 @@ void bfs(Graph g, Point start, Point end, Deque path, int *expanded, double *cos
     g_node_cost_set(initial, 0);
     queue_push(nodes, initial);
     *cost     = 0;
-    *expanded = 1;
+    *expanded = 0;
     while (!queue_empty(nodes)) {
         GNode top = queue_enqueue(nodes);
         Point p   = g_node_get_point(top);
@@ -31,9 +31,9 @@ void bfs(Graph g, Point start, Point end, Deque path, int *expanded, double *cos
                 g_node_set_state(a, VISITED);
                 g_node_prev_set(a, p);
                 queue_push(nodes, a);
-                *expanded += 1;
             }
         }
+        *expanded += 1;
         if (point_cmp(p, end)) {
             result = 1;
             *cost  = g_node_cost_get(top);
