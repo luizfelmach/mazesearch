@@ -13,14 +13,18 @@ int main(int argc, char **argv) {
         exit(1);
     }
 
-    Deque path     = deque(free);
-    int   expanded = 0;
-    Maze  m        = maze_make(f);
-    // maze_show(m);
+    Maze  m = maze_make(f);
     Graph g = maze_to_graph(m);
-    // graph_show(g);
 
-    bfs(g, (Point){0, 0}, (Point){1, 4}, path, &expanded);
+    Deque  path     = deque(free);
+    int    expanded = 0;
+    double cost     = 0;
+    Point  start    = {0, 0};
+    Point  end      = {4, 4};
+
+    bfs(g, start, end, path, &expanded, &cost);
+
+    maze_save_solution(stdout, path, cost, expanded);
 
     graph_destroy(g);
     maze_destroy(m);

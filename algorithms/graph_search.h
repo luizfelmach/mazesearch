@@ -5,8 +5,8 @@
 #include <g_node.h>
 #include <graph.h>
 
-int dfs(Graph g, Point start, Point end, Deque path, int *expanded);
-int bfs(Graph g, Point start, Point end, Deque path, int *expanded);
-int a_star(Graph g, Point start, Point end, Deque path, int *expanded);
+void dfs(Graph g, Point start, Point end, Deque path, int *expanded, double *cost);
+void bfs(Graph g, Point start, Point end, Deque path, int *expanded, double *cost);
+void a_star(Graph g, Point start, Point end, Deque path, int *expanded);
 
 #endif

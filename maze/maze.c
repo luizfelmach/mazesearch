@@ -1,9 +1,10 @@
+#include <deque.h>
 #include <maze.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 int neighborhood[8][2] = {{0, 1},  {1, 0},   {1, 1},  {-1, 0},
-                            {0, -1}, {-1, -1}, {1, -1}, {-1, 1}};
+                          {0, -1}, {-1, -1}, {1, -1}, {-1, 1}};
 
 struct _maze {
     int             row, column;
@@ -71,4 +72,19 @@ void maze_destroy(Maze m) {
     }
     free(m->maze);
     free(m);
+}
+
+void maze_save_solution(FILE *out, Deque path, double cost, int expanded_nodes) {
+    if (deque_size(path) == 0) {
+        fprintf(out, "IMPOSSIVEL\n");
+        return;
+    }
+    int i;
+    for (i = 0; i < deque_size(path); i++) {
+        Point *p = deque_at(path, i);
+        fprintf(out, "%d %d\n", p->x, p->y);
+    }
+    fprintf(out, "%.2lf\n", cost);
+    fprintf(out, "%d\n", deque_size(path));
+    fprintf(out, "%d\n", expanded_nodes);
 }

@@ -6,16 +6,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int dfs(Graph g, Point start, Point end, Deque path, int *expanded) {
+void dfs(Graph g, Point start, Point end, Deque path, int *expanded, double *cost) {
     int   i, result = 0;
     GNode initial = graph_node_get(g, start.x, start.y);
     if (!initial) {
-        return result;
+        return;
     }
     Stack nodes = stack(NULL);
     g_node_set_state(initial, VISITED);
     g_node_cost_set(initial, 0);
     stack_push(nodes, initial);
+    *cost     = 0;
     *expanded = 1;
     while (!stack_empty(nodes)) {
         GNode top = stack_pop(nodes);
@@ -35,7 +36,7 @@ int dfs(Graph g, Point start, Point end, Deque path, int *expanded) {
         }
         if (point_cmp(p, end)) {
             result = 1;
-            printf("%lf\n", g_node_cost_get(top));
+            *cost  = g_node_cost_get(top);
             break;
         }
     }
@@ -47,9 +48,9 @@ int dfs(Graph g, Point start, Point end, Deque path, int *expanded) {
                 deque_push_front(path, point_alloc(start));
                 break;
             }
+            deque_push_front(path, point_alloc(k));
             GNode a = graph_node_get(g, k.x, k.y);
             k       = g_node_prev_get(a);
         }
     }
-    return result;
 }
