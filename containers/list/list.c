@@ -2,11 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct _node_list {
-    void              *value;
-    struct _node_list *next;
-} *NodeList;
-
 NodeList node_list_new(void *value, NodeList next) {
     NodeList node = calloc(1, sizeof(struct _node_list));
     node->value   = value;
@@ -17,12 +12,6 @@ NodeList node_list_new(void *value, NodeList next) {
 void node_list_destroy(NodeList node) {
     free(node);
 }
-
-struct _list {
-    int       size;
-    NodeList  head, tail;
-    free_list free;
-};
 
 List list(free_list free) {
     List l  = calloc(1, sizeof(struct _list));
