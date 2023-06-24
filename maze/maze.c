@@ -3,8 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int neighborhood[8][2] = {{0, 1},  {1, 0},   {1, 1},  {-1, 0},
-                          {0, -1}, {-1, -1}, {1, -1}, {-1, 1}};
+int neighborhood[8][2] = {{-1, 0}, {-1, 1}, {0, 1},  {1, 1},
+                          {1, 0},  {1, -1}, {0, -1}, {-1, -1}};
 
 struct _maze {
     int             row, column;
