@@ -35,35 +35,55 @@ Map map(map_hash hash, map_cmp cmp, map_free free_key, map_free free_data) {
     return m;
 }
 
+map_pair *_map_get_pair(Map m, void *key) {
+    int index = m->hash(m->allocated, key) % m->allocated;
+    if (!m->data[index]) {
+        return NULL;
+    }
+    map_pair *target = NULL;
+    NodeList  n      = m->data[index]->head;
+    while (n) {
+        map_pair *mp = n->value;
+        if (!m->cmp(key, mp->key)) {
+            target = mp;
+            break;
+        }
+        n = n->next;
+    }
+
+    return target;
+}
+
 void map_set(Map m, void *key, void *data) {
     int index = m->hash(m->allocated, key) % m->allocated;
     if (!m->data[index]) {
         m->data[index] = list(NULL);
     }
-    map_pair *mp = map_pair_new(key, data);
-    list_push_front(m->data[index], mp);
+
+    map_pair *mp = _map_get_pair(m, key);
+    if (!mp) {
+        list_push_front(m->data[index], map_pair_new(key, data));
+    } else {
+        if (m->free_data) {
+            m->free_data(mp->data);
+        }
+        if (m->free_key) {
+            m->free_key(key);
+        }
+        mp->data = data;
+    }
     m->size += 1;
 }
 
 void *map_get(Map m, void *key) {
-    int index = m->hash(m->allocated, key) % m->allocated;
-    if (!m->data[index]) {
+    map_pair *mp = _map_get_pair(m, key);
+    if (!mp) {
         return NULL;
-    }
-    void    *target = NULL;
-    NodeList n      = m->data[index]->head;
-    while (n) {
-        map_pair *mp = n->value;
-        if (!m->cmp(key, mp->key)) {
-            target = mp->data;
-            break;
-        }
-        n = n->next;
     }
     if (m->free_key) {
         m->free_key(key);
     }
-    return target;
+    return mp->data;
 }
 
 int map_size(Map m) {
@@ -84,9 +104,8 @@ void map_destroy(Map m) {
                     m->free_data(mp->data);
                 }
                 free(mp);
-                break;
                 n = n->next;
-            }   
+            }
             list_destroy(m->data[i]);
         }
     }
