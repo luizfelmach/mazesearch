@@ -4,7 +4,7 @@
 typedef struct _deque *Deque;
 typedef void (*free_deque)(void *);
 
-Deque deque();
+Deque deque(free_deque free);
 void  deque_push_back(Deque d, void *data);
 void  deque_push_front(Deque d, void *data);
 void *deque_pop_back(Deque d);
