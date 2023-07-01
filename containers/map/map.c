@@ -63,6 +63,7 @@ void map_set(Map m, void *key, void *data) {
     map_pair *mp = _map_get_pair(m, key);
     if (!mp) {
         list_push_front(m->data[index], map_pair_new(key, data));
+        m->size += 1;
     } else {
         if (m->free_data) {
             m->free_data(mp->data);
@@ -72,7 +73,6 @@ void map_set(Map m, void *key, void *data) {
         }
         mp->data = data;
     }
-    m->size += 1;
 }
 
 void *map_get(Map m, void *key) {
@@ -84,6 +84,13 @@ void *map_get(Map m, void *key) {
         m->free_key(key);
     }
     return mp->data;
+}
+
+void map_force_key(Map m, void *key) {
+    map_pair *mp = _map_get_pair(m, key);
+    if (mp) {
+        mp->key = key;
+    }
 }
 
 int map_size(Map m) {
