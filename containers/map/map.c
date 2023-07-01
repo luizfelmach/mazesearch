@@ -86,7 +86,7 @@ void map_destroy(Map m) {
                 free(mp);
                 break;
                 n = n->next;
-            }
+            }   
             list_destroy(m->data[i]);
         }
     }
