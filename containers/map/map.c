@@ -93,6 +93,39 @@ void map_force_key(Map m, void *key) {
     }
 }
 
+void map_del(Map m, void *key) {
+    int index = m->hash(m->allocated, key) % m->allocated;
+    if (!m->data[index]) {
+        return;
+    }
+
+    NodeList cur  = m->data[index]->head;
+    NodeList prev = NULL;
+
+    while (cur) {
+        map_pair *mp = cur->value;
+        if (!m->cmp(key, mp->key)) {
+            if (prev == NULL) {
+                m->data[index]->head = cur->next;
+            } else {
+                prev->next = cur->next;
+            }
+            if (m->free_key) {
+                m->free_key(mp->key);
+            }
+            if (m->free_data) {
+                m->free_data(mp->data);
+            }
+            free(cur);
+            free(mp);
+            m->data[index]->size -= 1;
+            break;
+        }
+        prev = cur;
+        cur  = cur->next;
+    }
+}
+
 int map_size(Map m) {
     return m->size;
 }

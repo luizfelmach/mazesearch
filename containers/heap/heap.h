@@ -4,7 +4,7 @@
 #include <map.h>
 
 typedef void (*heap_free)(void *);
-typedef int (*heap_prio)(void *, void *);
+typedef double (*heap_prio)(void *);
 
 typedef struct _heap *Heap;
 

@@ -33,8 +33,10 @@ int point_hash(int size, void *p) {
     return res;
 }
 
-double prio(TPoint *p) {
-    return p->p;
+double prio(void *p) {
+    TPoint *a = p;
+
+    return a->p;
 }
 
 int point_priority(void *p1, void *p2) {
@@ -45,7 +47,7 @@ int point_priority(void *p1, void *p2) {
 
 int main() {
     Map  m = map(point_hash, point_cmp1, NULL, free);
-    Heap h = heap(m, point_priority, free);
+    Heap h = heap(m, prio, free);
 
     heap_insert(h, tpoint(13, 12123, 1999));
     heap_insert(h, tpoint(10, 12, 1));
@@ -56,7 +58,7 @@ int main() {
     heap_insert(h, tpoint(13, 12, 1));
     heap_insert(h, tpoint(13, 12, 1));
     heap_insert(h, tpoint(13, 12, 1));
-    heap_insert(h, tpoint(13, 12, 1));
+    heap_insert(h, tpoint(13, 12, 100));
     heap_insert(h, tpoint(13, 12, 1));
 
     while (!heap_empty(h)) {

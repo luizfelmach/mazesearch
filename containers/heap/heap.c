@@ -52,7 +52,7 @@ void _heapify_up(Heap h, int a) {
         void *child  = h->data[last_idx];
         void *parent = h->data[parent_idx];
 
-        if (h->prio(child, parent)) {
+        if (h->prio(child) < h->prio(parent)) {
             _heap_swap(h, last_idx, parent_idx);
         }
 
@@ -70,12 +70,12 @@ void _heapify_down(Heap h, int a) {
         int child2_idx = _heap_child2(i);
 
         if (child1_idx < last_idx &&
-            !h->prio(h->data[current_idx], h->data[child1_idx])) {
+            h->prio(h->data[current_idx]) > h->prio(h->data[child1_idx])) {
             current_idx = child1_idx;
         }
 
         if (child2_idx < last_idx &&
-            !h->prio(h->data[current_idx], h->data[child2_idx])) {
+            h->prio(h->data[current_idx]) > h->prio(h->data[child2_idx])) {
             current_idx = child2_idx;
         }
 
@@ -99,12 +99,18 @@ void heap_insert(Heap h, void *data) {
         *index = h->size;
         map_set(h->indexes, data, index);
     } else {
-        map_force_key(h->indexes, data);
-        if (h->free) {
-            h->free(h->data[*index]);
+        if (h->prio(data) < h->prio(h->data[*index])) {
+            map_force_key(h->indexes, data);
+            if (h->free) {
+                h->free(h->data[*index]);
+            }
+            h->data[*index] = data;
+            _heapify_up(h, *index);
+        } else {
+            if (h->free) {
+                h->free(data);
+            }
         }
-        h->data[*index] = data;
-        _heapify_up(h, *index);
         return;
     }
     h->data[h->size] = data;
@@ -118,6 +124,7 @@ void *heap_pop(Heap h) {
     }
     void *target = h->data[0];
     _heapify_down(h, 0);
+    map_del(h->indexes, target);
     h->size -= 1;
     return target;
 }
