@@ -7,6 +7,6 @@
 
 void dfs(Graph g, Point start, Point end, Deque path, int *expanded, double *cost);
 void bfs(Graph g, Point start, Point end, Deque path, int *expanded, double *cost);
-void a_star(Graph g, Point start, Point end, Deque path, int *expanded);
+void a_star(Graph g, Point start, Point end, Deque path, int *expanded, double *cost);
 
 #endif

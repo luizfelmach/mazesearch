@@ -6,6 +6,7 @@
 struct _g_node {
     int       size_edge;
     double    cost;
+    double    prio;
     NodeState state;
     Point     point;
     Point     edges[8];
@@ -72,6 +73,14 @@ void g_node_cost_set(GNode gn, double cost) {
 
 double g_node_cost_get(GNode gn) {
     return gn->cost;
+}
+
+void g_node_prio_set(GNode gn, double prio) {
+    gn->prio = prio;
+}
+
+double g_node_prio_get(GNode gn) {
+    return gn->prio;
 }
 
 Point *point_alloc(Point a) {
